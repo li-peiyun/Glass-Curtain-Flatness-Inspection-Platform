@@ -163,7 +163,7 @@ def match_two_edge(image, positions, adjacents, idx, direction, labeled_image=No
     return None
 
 
-def match_reflected_edges(image):
+def match_reflected_edges_by_chroma(image):
     # 获取分割后的玻璃图像并得到邻接关系字典
     cropped_images, cropped_positions, adjacency_dict = complexSplit(image)
 
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     file_path = "../output/preprocess.png"
     image = cv2.imread(file_path)
 
-    labeled_image, results = match_reflected_edges(image)
+    labeled_image, results = match_reflected_edges_by_chroma(image)
 
     # 显示标注后的图像
     window_name = 'match'

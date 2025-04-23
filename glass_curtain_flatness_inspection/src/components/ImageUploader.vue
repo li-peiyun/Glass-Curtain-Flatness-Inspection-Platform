@@ -6,16 +6,32 @@
     <main>
       <div v-if="!imageUrl && !isLoading" class="initial-section">
         <div class="upload-section">
-          <input type="file" @change="onFileChange" accept="image/*">
+          <input type="file" :key="fileInputKey" @change="onFileChange" accept="image/*">
           <button @click="uploadImage" :disabled="!file">上传图片</button>
+        </div>
+        <div class="method-selection">
+          <label>
+            <input type="radio" v-model="selectedMethod" value="chroma"> 采样色度比较法
+          </label>
+          <label>
+            <input type="radio" v-model="selectedMethod" value="contours"> 轮廓坐标比较法
+          </label>
         </div>
       </div>
       <div v-if="imageUrl && !processedImageUrl && !isLoading" class="preview-section">
         <div class="upload-section">
-          <input type="file" @change="onFileChange" accept="image/*">
+          <input type="file" :key="fileInputKey" @change="onFileChange" accept="image/*">
           <button @click="uploadImage" :disabled="!file">上传图片</button>
         </div>
         <img :src="imageUrl" alt="Uploaded Image" width="300" @click="openModal(imageUrl)" class="zoomable">
+        <div class="method-selection">
+          <label>
+            <input type="radio" v-model="selectedMethod" value="chroma"> 采样色度比较法
+          </label>
+          <label>
+            <input type="radio" v-model="selectedMethod" value="contours"> 轮廓坐标比较法
+          </label>
+        </div>
       </div>
       <div v-if="isLoading" class="loading-section">
         <h3>处理中...</h3>
@@ -58,7 +74,7 @@
     </main>
     <!-- 图片放大模态框 -->
     <div v-if="showModal" class="modal" @click="closeModal">
-      <div ref="imageContainer">
+      <div ref="imageContainer" class="viewer-container">
         <img :src="modalImageUrl" alt="Enlarged Image" class="enlarged-image">
       </div>
     </div>
@@ -81,7 +97,9 @@ export default {
       resultsPerPage: 12, // 每页显示12条信息
       showModal: false,
       modalImageUrl: '',
-      viewer: null
+      viewer: null,
+      fileInputKey: 0,
+      selectedMethod: 'chroma' // 默认选择采样色度比较法
     };
   },
   computed: {
@@ -97,8 +115,14 @@ export default {
   methods: {
     onFileChange(e) {
       const file = e.target.files[0];
-      this.file = file;
-      this.imageUrl = URL.createObjectURL(file);
+      if (file) {
+        this.file = file;
+        this.imageUrl = URL.createObjectURL(file);
+        this.fileInputKey += 1; // 更新 key 以强制重新渲染文件输入组件
+      } else {
+        this.file = null;
+        this.imageUrl = '';
+      }
     },
     async uploadImage() {
       if (!this.file) return; // 如果没有文件，不进行上传
@@ -110,6 +134,7 @@ export default {
 
       const formData = new FormData();
       formData.append('image', this.file);
+      formData.append('method', this.selectedMethod); // 添加选择的方法
 
       try {
         const response = await fetch('http://localhost:5000/process-image', {
@@ -132,6 +157,7 @@ export default {
       this.results = [];
       this.isLoading = false;
       this.currentPage = 1; // 重置页码
+      this.fileInputKey += 1; // 更新 key 以强制重新渲染文件输入组件
     },
     prevPage() {
       if (this.currentPage > 1) {
@@ -242,6 +268,18 @@ main {
 
 .upload-section button:hover:not(:disabled) {
   background-color: #45a049;
+}
+
+.method-selection {
+  margin-bottom: 20px;
+}
+
+.method-selection label {
+  margin-right: 20px;
+}
+
+.method-selection input[type="radio"] {
+  margin-right: 5px;
 }
 
 .preview-section img {

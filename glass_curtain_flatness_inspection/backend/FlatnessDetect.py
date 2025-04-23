@@ -1,13 +1,19 @@
 import cv2
 from run import preprocess_image
-# from detect.matchByContours import match_reflected_edges
-from detect.matchByChroma import match_reflected_edges
+from detect.matchByContours import match_reflected_edges_by_contours
+from detect.matchByChroma import match_reflected_edges_by_chroma
 
 
 # 主要平整度检测函数
-def main_detect(image_name):
+def main_detect_by_chroma(image_name):
     pre_result_image = preprocess_image(image_name)
-    labeled_image, results = match_reflected_edges(pre_result_image)
+    labeled_image, results = match_reflected_edges_by_chroma(pre_result_image)
+
+    return labeled_image, results
+
+def main_detect_by_contours(image_name):
+    pre_result_image = preprocess_image(image_name)
+    labeled_image, results = match_reflected_edges_by_contours(pre_result_image)
 
     return labeled_image, results
 
@@ -15,7 +21,7 @@ def main_detect(image_name):
 if __name__ == "__main__":
     # 设置图片名称
     image_name = "test1.png"
-    labeled_image, results = main_detect(image_name)
+    labeled_image, results = main_detect_by_chroma(image_name)
 
     # 显示标注后的图像
     window_name = 'match'

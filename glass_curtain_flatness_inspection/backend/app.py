@@ -4,7 +4,8 @@ import os
 import cv2
 import numpy as np
 from flask_cors import CORS
-from FlatnessDetect import main_detect  # 导入main_detect函数
+from FlatnessDetect import main_detect_by_chroma, main_detect_by_contours  # 导入两个处理函数
+import uuid
 
 app = Flask(__name__)
 CORS(app)  # 允许所有来源的请求，可以根据需要进行更细粒度的控制
@@ -28,11 +29,20 @@ def process_image():
         file_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_path)
 
-        # 调用main_detect函数进行图片处理
-        labeled_image, results = main_detect(filename)
+        # 获取用户选择的方法
+        method = request.form.get('method', 'chroma')  # 默认使用采样色度比较法
 
-        # 保存处理后的图片
-        processed_file_path = os.path.join(PROCESSED_FOLDER, filename)
+        # 根据选择的方法调用相应的处理函数
+        if method == 'chroma':
+            labeled_image, results = main_detect_by_chroma(filename)
+        elif method == 'contours':
+            labeled_image, results = main_detect_by_contours(filename)
+        else:
+            return jsonify({'error': 'Invalid method'}), 400
+
+        # 生成唯一的处理后文件名
+        processed_filename = f"{uuid.uuid4()}-{filename}"
+        processed_file_path = os.path.join(PROCESSED_FOLDER, processed_filename)
         cv2.imwrite(processed_file_path, labeled_image)
 
         # 构建结果列表
@@ -45,7 +55,7 @@ def process_image():
 
         # 返回处理后的图片路径和结果列表
         return jsonify({
-            'processedImage': f'http://localhost:5000/processed/{filename}',
+            'processedImage': f'http://localhost:5000/processed/{processed_filename}',
             'results': result_list
         })
 
