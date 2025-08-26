@@ -52,7 +52,7 @@ Using the trained **segmentation model**, window frame regions were extracted fr
 
 After isolating the frame regions, **Otsu thresholding** was applied to automatically separate glass surface reflections from the background:  
 
-<img src="pic/otsu_result.png" alt="Otsu Result" width="400" />  
+<img src="pic/otsu_result.png" alt="Otsu Result" width="560" />  
 
 ### Single Glass Segmentation and Adjacency Construction
 
@@ -72,7 +72,7 @@ After segmenting individual glass panels, adjacency relationships between rectan
 
 This geometry-based method evaluates flatness by comparing whether the reflection contours along adjacent glass panel boundaries are continuous and consistent.  
 
-<img src="pic/contour.png" alt="Contour Comparison" style="zoom: 15%;" />  
+<img src="pic/contour.png" alt="Contour Comparison" width="400" />  
 
 #### Approach 2: Sampling-based Chromaticity Comparison
 
@@ -82,7 +82,7 @@ Chroma = \sqrt{(R-G)^2 + (G-B)^2 + (B-R)^2}
 $$
 Neighboring panels are compared by matching corresponding sampling points. If over 90% of pairs show consistent chromaticity classification, the adjacent panels are considered flat; otherwise, potential unevenness is indicated.  
 
-<img src="pic/chroma.png" alt="Chromaticity Comparison" style="zoom:15%;" />  
+<img src="pic/chroma.png" alt="Chromaticity Comparison" width="400" />  
 
 ## Results and Evaluation
 
