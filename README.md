@@ -52,7 +52,7 @@ Using the trained **segmentation model**, window frame regions were extracted fr
 
 After isolating the frame regions, **Otsu thresholding** was applied to automatically separate glass surface reflections from the background:  
 
-<img src="pic/otsu_result.png" alt="Otsu Result" style="zoom:67%;" />  
+<img src="pic/otsu_result.png" alt="Otsu Result" width="400" />  
 
 ### Single Glass Segmentation and Adjacency Construction
 
