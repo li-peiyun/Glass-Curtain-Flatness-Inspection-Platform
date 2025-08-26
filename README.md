@@ -77,7 +77,9 @@ This geometry-based method evaluates flatness by comparing whether the reflectio
 #### Approach 2: Sampling-based Chromaticity Comparison
 
 This method evaluates flatness based on visual consistency. For each glass panel, inner edges are defined (offset = 30px) to avoid frame interference. Along these edges, 100 sampling points are selected, and their chromaticity values are computed in RGB space: 
+
 $$Chroma = \sqrt{(R-G)^2 + (G-B)^2 + (B-R)^2}$$
+
 Neighboring panels are compared by matching corresponding sampling points. If over 90% of pairs show consistent chromaticity classification, the adjacent panels are considered flat; otherwise, potential unevenness is indicated.  
 
 <img src="pic/chroma.png" alt="Chromaticity Comparison" width="400" />  
